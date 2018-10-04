@@ -2,7 +2,7 @@
 """
 Created on Thu Oct  4 05:33:45 2018
 
-@author: Boulayara
+@author: Ibrahima
 """
 # import des librairies
 import urllib2
@@ -16,7 +16,7 @@ filenames =[] # tableau qui va contenir les noms des fichiers pdf
 homepageUrl = "http://www.securite-routiere.gouv.fr"
 
 
-def scraper_page(urlPage):
+def scraper_securite_routiere(urlPage):
         
     hdr = {'User-Agent': 'Mozilla/5.0'}
     req = urllib2.Request(urlPage,headers=hdr)
@@ -35,6 +35,17 @@ def scraper_page(urlPage):
                 #print downloadUrl
                 lesUrls.append(downloadUrl)
                 filenames.append(indicateurs.select('a')[i].attrs['href'])
+            else :
+                # scraping de la 2eme page 
+                req2 = urllib2.Request(downloadUrl,headers=hdr)
+                page2 = urllib2.urlopen(req2)
+                soup2= bfs(page2,'html.parser')
+                #print soup2
+                for cpt, lien in enumerate(soup2.find_all('a')):
+                    if lien.get('href').endswith('pdf'):
+                        downloadlink =homepageUrl + lien.get('href')
+                        lesUrls.append(downloadlink)
+                        filenames.append(downloadlink)
              
                         
     names_urls = zip(filenames, lesUrls)
@@ -53,5 +64,5 @@ def scraper_page(urlPage):
 # url de la page web a scrapper
 pageUrl = "http://www.securite-routiere.gouv.fr/la-securite-routiere/l-observatoire-national-interministeriel-de-la-securite-routiere/accidentalite-routiere/indicateurs-locaux?xtmc=indicateurs&xtcr=8"
 
-scraper_page(pageUrl)
+scraper_securite_routiere(pageUrl)
 
