@@ -1,4 +1,6 @@
 from Scrapper.scrapper import Scrapper
+from Scrapper.scrapper import scrap_open_data_lr
+from Scrapper.scrapper import scrap_data_gouv
 
 if __name__ == "__main__":
 
@@ -10,4 +12,6 @@ if __name__ == "__main__":
                 "https://opendata.larochelle.fr/dataset/occupation-du-domaine-public-travaux-sur-la-voirie"]
 
         scrap.get_links(urls , scrap_open_data_lr)
+        scrap.get_link("https://www.data.gouv.fr/fr/datasets/base-de-donnees-accidents-corporels-de-la-circulation/",scrap_data_gouv)
+
         scrap.download_data()

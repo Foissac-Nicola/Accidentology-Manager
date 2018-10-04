@@ -4,6 +4,7 @@ Created on Fri Sep 28 14:50:10 2018
 
 @author: malik
 @author: nfoissac
+@author: alexandre
 """
 
 
@@ -56,11 +57,16 @@ class Scrapper:
 def scrap_data_gouv(content):
     result = []
     soup = beautiful_soup(content, 'html.parser')
-    tags = soup.find_all("article", {"class": "resource-card"})
+    tags = soup.find("section",{"class":"content"}).find_all("article",{"class":"resource-card"})
     for tag in tags:
-        url = tag.find_all("article", {"class": "resource-card"})
-        name = tag.find("h4", {"class": "ellipsis"}).get_text()
-        result.append([url, name])
+        balises = tag.find_all("a",{"class":"btn-primary"})
+        for balise in balises:
+            if balise.get_text() == "Télécharger":
+                url = balise.attrs['href']
+                name = tag.find("h4",{"class":"ellipsis"}).get_text().translate(str.maketrans({'\"': '','\'': ''}))
+                if url.split(".")[-1] == '':
+                    name = name+".csv"
+            result.append([url, name])
     return result
 
 
@@ -69,7 +75,8 @@ def scrap_open_data_lr(content):
     soup = beautiful_soup(content, 'html.parser')
     tags = soup.find_all("a", {"class": "icon-kml"})
     for tag in tags :
-        url =  tag.get('href')
-        name = url.split("/")[-2]+"-"+url.split("/")[-1]+".kml"
-        result.append([url,name])
+        if tag != None:
+            url =  tag.get('href')
+            name = url.split("/")[-2]+"-"+url.split("/")[-1]+".kml"
+            result.append([url,name])
     return result
