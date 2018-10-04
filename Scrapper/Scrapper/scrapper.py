@@ -3,92 +3,73 @@
 Created on Fri Sep 28 14:50:10 2018
 
 @author: malik
+@author: nfoissac
 """
 
-from bs4 import BeautifulSoup
-from selenium import webdriver
-import requests
+
+from requests import get as get_url
 import urllib
-import os
-import time
+from bs4 import BeautifulSoup as beautiful_soup
+from selenium import webdriver
 
-if "data" not in os.listdir("."):
-    os.mkdir("data")
-    
-def data_gouv():
-    if "data-gouv" not in os.listdir("./data"):
-        os.mkdir("data/data-gouv")
-    
-    url = "https://www.data.gouv.fr/fr/datasets/base-de-donnees-accidents-corporels-de-la-circulation/"
-    
-    requete = requests.get(url)
-    content = requete.content
-        
-    soup = BeautifulSoup(content,'html.parser')
-    
-    resources = soup.find_all("article",{"class":"resource-card"})
-    start_total_time = time.time()
-    for resource in resources:
-        url = resource.find("a",{"class":"btn-primary"}).attrs['href']
-        name = resource.find("h4",{"class":"ellipsis"}).get_text()
-        print("Enregistrement en cours de \'"+name+"\'")
-        tic = time.time()
-        urllib.request.urlretrieve(url,"data/data-gouv"+name)
-        toc = time.time()
-        print("Enregistrement terminé : ",toc - tic, " sec")
-    end_total_time = time.time()
-    print('data-gouv : Total time ', end_total_time - start_total_time, 'sec')
-    
-def opendata_lr():
-    if "opendata-lr" not in os.listdir("./data"):
-        os.mkdir("data/opendata-lr")
-        
-    base_url = "https://opendata.larochelle.fr/dataset/"
-    urls = ["reseau-de-transport-cyclable-voie-bus",
-            "stationnement-place-des-deux-roues-motorises",
-            "occupation-du-domaine-public-travaux-sur-la-voirie"]
 
-    start_total_time = time.time()
-    for name in urls:
-        url = base_url+name
-        
-        requete = requests.get(url)
-        content = requete.content
-             
-        soup = BeautifulSoup(content,'html.parser')
-        resource = soup.find("a",{"class":"icon-kml"}).attrs['href']
-        print("Enregistrement en cours de \'"+name+"\'")
-        tic = time.time()
-        urllib.request.urlretrieve(resource,"data/opendata-lr/"+name+".kml")
-        toc = time.time()
-        print("Enregistrement terminé : ",toc - tic, " sec")    
-    end_total_time = time.time()
-    print('opendata-lr : Total time ', end_total_time - start_total_time, 'sec')
-    
-def scoresante():
-#    if "scoresante" not in os.listdir("./data"):
-#        os.mkdir("data/scoresante")
-#        
-#    url = "http://www.scoresante.org/sindicateurs_2015.html"
-#        
-#    driver = webdriver.PhantomeJS()
-#    driver.get(my_url)
-#    p_element = driver.find_element_by_id(id_='intro-text')
-#    
-#    resources = soup.find_all("article",{"class":"resource-card"})
-#    start_total_time = time.time()
-#    for resource in resources:
-#        url = resource.find("a",{"class":"btn-primary"}).attrs['href']
-#        name = resource.find("h4",{"class":"ellipsis"}).get_text()
-#        print("Enregistrement en cours de \'"+name+"\'")
-#        tic = time.time()
-#        urllib.request.urlretrieve(url,"data/scoresante"+name)
-#        toc = time.time()
-#        print("Enregistrement terminé : ",toc - tic, " sec")
-#    end_total_time = time.time()
-#    print('scoresante : Total time ', end_total_time - start_total_time, 'sec')
-    
-#data_gouv()
-#opendata_lr()
-#scoresante()
-    pass
+
+class Scrapper:
+
+    def __init__(self) -> None:
+        self.__urls = []
+        self.__dataDir = "."
+        super().__init__()
+
+    def append_url(self, url):
+        if isinstance(url, str):
+            self.__urls.append(url)
+        return self
+
+    def append_urls(self, urls):
+        if isinstance(urls, list):
+            self.__urls.extend(urls)
+        return self
+
+    def set_data_dir(self, path):
+        if isinstance(path, str):
+            self.__dataDir = path
+
+    def get_links(self, urls, scrap_func):
+        if isinstance(urls, list):
+            for url in urls:
+                self.get_link(url, scrap_func)
+
+    def get_link(self, url, scrap_func):
+        if isinstance(url, str):
+            request = get_url(url)
+            content = request.content
+            self.__urls.extend(scrap_func(content))
+
+    def download_data(self):
+        for url in self.__urls:
+            print(self.__dataDir+url[1])
+            urllib.request.urlretrieve(url[0], str(url[1]))
+
+
+
+def scrap_data_gouv(content):
+    result = []
+    soup = beautiful_soup(content, 'html.parser')
+    tags = soup.find_all("article", {"class": "resource-card"})
+    for tag in tags:
+        url = tag.find_all("article", {"class": "resource-card"})
+        name = tag.find("h4", {"class": "ellipsis"}).get_text()
+        result.append([url, name])
+    return result
+
+
+def scrap_open_data_lr(content):
+    result = []
+    soup = beautiful_soup(content, 'html.parser')
+    tags = soup.find_all("a", {"class": "icon-kml"})
+    for tag in tags :
+        url =  tag.get('href')
+        name = url.split("/")[-2]+"-"+url.split("/")[-1]+".kml"
+        result.append([url,name])
+    return result
