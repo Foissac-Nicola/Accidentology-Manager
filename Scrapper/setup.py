@@ -7,5 +7,5 @@ setup(
    author='Team Accidentology-Manager',
    author_email=' ',
    packages=['Scrapper'],
-   install_requires=['beautifulsoup4', 'selenium' , 'requests']
+   install_requires=['beautifulsoup4' , 'requests','dryscrape']
 )

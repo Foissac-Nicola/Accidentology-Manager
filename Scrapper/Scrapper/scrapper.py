@@ -11,7 +11,8 @@ Created on Fri Sep 28 14:50:10 2018
 from requests import get as get_url
 import urllib
 from bs4 import BeautifulSoup as beautiful_soup
-from selenium import webdriver
+import dryscrape
+
 
 
 
@@ -80,3 +81,37 @@ def scrap_open_data_lr(content):
             name = url.split("/")[-2]+"-"+url.split("/")[-1]+".kml"
             result.append([url,name])
     return result
+
+
+
+
+
+
+def scrap_score_test(content):
+    session = dryscrape.Session()
+    session.set_attribute('local_storage_enabled')
+    session.visit("http://www.scoresante.org/sindicateurs.html")
+    response = session.body()
+    b = session.at_xpath('//*[@id="treeArbreNoeudst4"]')
+    b.click()
+    b = session.at_xpath('//*[@id="treeArbreNoeudst13"]')
+    b.click()
+    b = session.at_xpath('//*[@id="treeArbreNoeudst18"]')
+    b.click()
+    b = session.at_xpath('//*[@id="treeArbreNoeudst21"]')
+    b.click()
+    b = session.at_xpath('//*[@id="treeArbreNoeudst22"]')
+    b.click()
+    b = session.at_xpath('//*[@id="SP_EXPO"]')
+    b.click()
+    b = session.at_xpath('//*[@id="ctl00_CPH1_ucArbreNoeuds_ucNoeudInfos_RB_SELECT_PARAM"]')
+    b.click()
+    b = session.at_xpath('//*[@id="ctl00_CPH1_ucArbreNoeuds_ucNoeudInfos_ibn_Export_Csv"]')
+
+    b.left_click()
+
+    print(b)
+
+    file = open("test.csv", "w")
+    file.write(session.source())
+    file.close()
