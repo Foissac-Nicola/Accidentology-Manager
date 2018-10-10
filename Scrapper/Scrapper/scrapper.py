@@ -114,7 +114,15 @@ def scrap_score_test(content):
         if child['value'] == "DEP17" :
             child.select_option()
             pass
-    #b.children()[18].select_option()
+
+    # select export date 1
+    b = session.at_xpath('//*[@id="ctl00_CPH1_ucArbreNoeuds_ucNoeudInfos_ddl_date1_export"]')
+    b.children()[0].select_option()
+
+    # select export date 2
+    b = session.at_xpath('//*[@id="ctl00_CPH1_ucArbreNoeuds_ucNoeudInfos_ddl_date2_export"]')
+    b.children()[-1].select_option()
+
 
     b = session.at_xpath('//*[@id="ctl00_CPH1_ucArbreNoeuds_ucNoeudInfos_ibn_Export_Csv"]')
 
