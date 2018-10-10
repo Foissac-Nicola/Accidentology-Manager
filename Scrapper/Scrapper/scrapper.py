@@ -106,6 +106,16 @@ def scrap_score_test(content):
     b.click()
     b = session.at_xpath('//*[@id="ctl00_CPH1_ucArbreNoeuds_ucNoeudInfos_RB_SELECT_PARAM"]')
     b.click()
+    # get departament option
+    b = session.at_xpath('//*[@id="ctl00_CPH1_ucArbreNoeuds_ucNoeudInfos_ddlCriteresGeoExport"]')
+    # find good option
+    children = b.children()
+    for child in children:
+        if child['value'] == "DEP17" :
+            child.select_option()
+            pass
+    #b.children()[18].select_option()
+
     b = session.at_xpath('//*[@id="ctl00_CPH1_ucArbreNoeuds_ucNoeudInfos_ibn_Export_Csv"]')
 
     b.left_click()
