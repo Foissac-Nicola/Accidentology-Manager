@@ -100,12 +100,22 @@ def scrap_score_test(content):
     b.click()
     b = session.at_xpath('//*[@id="treeArbreNoeudst21"]')
     b.click()
+
+    # make atomisation here
     b = session.at_xpath('//*[@id="treeArbreNoeudst22"]')
+
+    filename = b.text().replace(" ", "_")+".csv"
+
     b.click()
     b = session.at_xpath('//*[@id="SP_EXPO"]')
     b.click()
     b = session.at_xpath('//*[@id="ctl00_CPH1_ucArbreNoeuds_ucNoeudInfos_RB_SELECT_PARAM"]')
     b.click()
+
+    # select all data to export
+    b = session.at_xpath('//*[@id="ctl00_CPH1_ucArbreNoeuds_ucNoeudInfos_ddlChoixLib"]')
+    b.children()[-1].select_option()
+
     # get departament option
     b = session.at_xpath('//*[@id="ctl00_CPH1_ucArbreNoeuds_ucNoeudInfos_ddlCriteresGeoExport"]')
     # find good option
@@ -130,6 +140,6 @@ def scrap_score_test(content):
 
     print(b)
 
-    file = open("test.csv", "w")
+    file = open(filename, "w")
     file.write(session.source())
     file.close()
