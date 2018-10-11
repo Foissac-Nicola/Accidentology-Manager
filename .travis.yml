@@ -28,7 +28,7 @@ matrix:
       addons:
         sonarcloud:
         organization: "foissac-nicola-github" # the key of the org you chose at step #3
-        token: ${SONAR_CLOUD}
+        token: "${SONAR_CLOUD}"
       script:
         - cd Scrapper
         - sonar-scanner -Dsonar.login=${SONAR_CLOUD} -Dsonar.projectKey=Foissac-Nicola_Accidentology-Manager -Dsonar.organization=foissac-nicola-github -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io
