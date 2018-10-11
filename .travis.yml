@@ -12,22 +12,20 @@ addons:
     organization: "Foissac-Nicola_Accidentology-Manager" # the key of the org you chose at step #3
     token:
       secure: SONARD_CLOUD # encrypted value of your token
-script:
-  # other script steps might be done before running the actual analysis
-  - sonar-scanner
+
 matrix:
   include:
     - language: python
       python: 3.6
       before_script:
         - cd Scrapper/
-        include :
-          - stage: "Tests"
-            name: "Unit Tests" 
-            script: skip
-          - stage: "Quality"
-            name: "Run Sonar Cloud" 
-            script: 
-              - sonar-scanner
+      include :
+        - stage: "Tests"
+          name: "Unit Tests" 
+          script: skip
+        - stage: "Quality"
+          name: "Run Sonar Cloud" 
+          script: 
+            - sonar-scanner
       
 
