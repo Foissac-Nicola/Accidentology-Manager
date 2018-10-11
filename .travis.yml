@@ -21,13 +21,14 @@ matrix:
       python: 3.6
       before_script:
         - cd Scrapper/
-      include :
-        - stage: "Tests"
-          name: "Unit Tests" 
-          script: skip
-        - stage: "Quality"
-          name: "Run Sonar Cloud" 
-          script: 
-            - sonar-scanner
+      jobs:
+        include :
+          - stage: "Tests"
+            name: "Unit Tests" 
+            script: skip
+          - stage: "Quality"
+            name: "Run Sonar Cloud" 
+            script: 
+              - sonar-scanner
       
 
