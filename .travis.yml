@@ -11,7 +11,7 @@ matrix:
     - language: python
       python: 3.6
       before_script:
-        - cd test-python/
-      stage: test
+        - cd Scrapper/
+      stage: Tests
       script: skip 
 
