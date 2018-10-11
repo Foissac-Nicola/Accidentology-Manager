@@ -19,16 +19,17 @@ matrix:
   include:
     - language: python
       python: 3.6
-      before_script:
-        - cd Scrapper/
       install:
         - pip install -r Scrapper/requirements.txt
+      stages:
+        - Tests
+        - Quality
       jobs:
         include :
-          - stage: "Tests"
+          - stage: Tests
             name: "Unit Tests" 
             script: skip
-          - stage: "Quality"
+          - stage: Quality
             name: "Run Sonar Cloud" 
             script: 
               - sonar-scanner
