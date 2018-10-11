@@ -30,7 +30,7 @@ matrix:
         organization: "foissac-nicola-github" # the key of the org you chose at step #3
       script:
         - cd Scrapper
-        - ls -a
+        - pwd
         - sonar-scanner -Dproject.settings=./sonar-project.properties -Dsonar.login=${SONAR_TOKEN}
 
 
