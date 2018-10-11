@@ -1,3 +1,6 @@
+dist: trusty
+sudo: required
+
 after_success:
   - wget https://raw.githubusercontent.com/k3rn31p4nic/travis-ci-discord-webhook/master/send.sh
   - chmod +x send.sh
@@ -10,8 +13,7 @@ after_failure:
 addons:
   sonarcloud:
     organization: "Foissac-Nicola_Accidentology-Manager" # the key of the org you chose at step #3
-    token:
-      secure: SONARD_CLOUD # encrypted value of your token
+    token: SONARD_CLOUD
 
 matrix:
   include:
