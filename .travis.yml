@@ -30,7 +30,7 @@ matrix:
         organization: "foissac-nicola-github" # the key of the org you chose at step #3
       script:
         - cd Scrapper
-        - sonar-scanner -Dsonar.login=${SONAR_TOKEN}
+        - sonar-scanner -Dsonar.login=${SONAR_TOKEN} -Dsonar.projectKey=Foissac-Nicola_Accidentology-Manager -Dsonar.projectName=Accidentology-Manager -Dsonar.projectVersion=0.1 -Dsonar.links.homepage=https://github.com/Foissac-Nicola/Accidentology-Manager -Dsonar.links.ci=https://travis-ci.com/Foissac-Nicola/Accidentology-Manager -Dsonar.links.scm=https://github.com/Foissac-Nicola/Accidentology-Manager -Dsonar.links.issue=https://github.com/Foissac-Nicola/Accidentology-Manager/issues -Dsonar.host.url=https://sonarcloud.io -Dsonar.sources=Scrapper -Dsonar.language=py -Dsonar.sourceEncoding=UTF-8
 
 
       
