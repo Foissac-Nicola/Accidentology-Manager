@@ -32,7 +32,7 @@ matrix:
       script:
         - cd Scrapper
         - ls -a
-        - sonar-scanner -X -Dproject.settings=./scrapper.properties -Dsonar.login=SONARD_LOGIN
+        - sonar-scanner -X -Dproject.settings=./scrapper.properties -Dsonar.login=SONARD_CLOUD
 
 
       
