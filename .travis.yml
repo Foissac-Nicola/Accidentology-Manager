@@ -32,7 +32,8 @@ matrix:
       name: "Run Sonar Cloud"
       script:
         - cd Scrapper
-        - sonar-scanner -Dproject.settings=./scrapper.properties
+        - ls -a
+        - sonar-scanner -X -Dproject.settings=./scrapper.properties -Dsonar.projectKey=xxx
 
 
       
