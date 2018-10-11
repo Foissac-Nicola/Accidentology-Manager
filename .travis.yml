@@ -28,8 +28,6 @@ matrix:
       
     - language: python
       python: 3.6
-      install:
-        - pip install -r Scrapper/requirements.txt
       stage: Quality
       name: "Run Sonar Cloud"
       script:
