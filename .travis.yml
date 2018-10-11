@@ -10,12 +10,7 @@ after_failure:
   - chmod +x send.sh
   - ./send.sh failure $WEBHOOK_URL
   
-addons:
-  sonarcloud:
-    organization: "foissac-nicola-github" # the key of the org you chose at step #3
-    token: SONARD_CLOUD
-
-    
+   
 matrix:
   include:
     - language: python
@@ -30,6 +25,10 @@ matrix:
       python: 3.6
       stage: Quality
       name: "Run Sonar Cloud"
+      addons:
+        sonarcloud:
+        organization: "foissac-nicola-github" # the key of the org you chose at step #3
+        token: SONARD_CLOUD
       script:
         - cd Scrapper
         - ls -a
