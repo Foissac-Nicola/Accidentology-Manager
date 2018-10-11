@@ -15,23 +15,24 @@ addons:
     organization: "foissac-nicola-github" # the key of the org you chose at step #3
     token: SONARD_CLOUD
 
+    
 matrix:
   include:
     - language: python
       python: 3.6
+      matrix:
+        include:
+         - stage: Tests
+           name: "Unit Tests"
+           script: skip
+         - stage: Quality
+           name: "Run Sonar Cloud"
+           script:
+             - sonar-scanner
       install:
         - pip install -r Scrapper/requirements.txt
-      stages:
-        - Tests
-        - Quality
-      jobs:
-        include :
-          - stage: Tests
-            name: "Unit Tests" 
-            script: skip
-          - stage: Quality
-            name: "Run Sonar Cloud" 
-            script: 
-              - sonar-scanner
+
+
+
       
 
