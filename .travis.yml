@@ -12,7 +12,7 @@ after_failure:
   
 addons:
   sonarcloud:
-    organization: "Foissac-Nicola_Accidentology-Manager" # the key of the org you chose at step #3
+    organization: "foissac-nicola-github" # the key of the org you chose at step #3
     token: SONARD_CLOUD
 
 matrix:
