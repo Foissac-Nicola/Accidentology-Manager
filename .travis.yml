@@ -31,6 +31,7 @@ matrix:
              - sonar-scanner
       install:
         - pip install -r Scrapper/requirements.txt
+      script: skip
 
 
 
