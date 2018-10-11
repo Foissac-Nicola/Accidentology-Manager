@@ -33,7 +33,9 @@ matrix:
       stage: Quality
       name: "Run Sonar Cloud"
       script:
-        - sonar-scanner
+        - cd Scrapper
+        - sonar-scanner -Dproject.settings=./scrapper.properties
+
 
       
 
