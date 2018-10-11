@@ -28,11 +28,10 @@ matrix:
       addons:
         sonarcloud:
         organization: "foissac-nicola-github" # the key of the org you chose at step #3
-        token: SONARD_CLOUD
       script:
         - cd Scrapper
         - ls -a
-        - sonar-scanner -X -Dproject.settings=./scrapper.properties -Dsonar.login=SONARD_CLOUD
+        - sonar-scanner -X -Dproject.settings=./scrapper.properties -Dsonar.login=${SONAR_TOKEN}
 
 
       
