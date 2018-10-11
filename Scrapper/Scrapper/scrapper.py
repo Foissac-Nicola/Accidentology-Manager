@@ -93,52 +93,52 @@ def scrap_score_test(content):
         session.set_attribute('local_storage_enabled')
         session.visit("http://www.scoresante.org/sindicateurs.html")
         response = session.body()
-        b = session.at_xpath('//*[@id="treeArbreNoeudst4"]')
-        b.click()
-        b = session.at_xpath('//*[@id="treeArbreNoeudst13"]')
-        b.click()
-        b = session.at_xpath('//*[@id="treeArbreNoeudst18"]')
-        b.click()
-        b = session.at_xpath('//*[@id="treeArbreNoeudst21"]')
-        b.click()
+        nodes = session.at_xpath('//*[@id="treeArbreNoeudst4"]')
+        nodes.click()
+        nodes = session.at_xpath('//*[@id="treeArbreNoeudst13"]')
+        nodes.click()
+        nodes = session.at_xpath('//*[@id="treeArbreNoeudst18"]')
+        nodes.click()
+        nodes = session.at_xpath('//*[@id="treeArbreNoeudst21"]')
+        nodes.click()
         # make atomisation here
-        b = session.at_xpath('//*[@id="treeArbreNoeudst'+str(id)+'"]')
+        nodes = session.at_xpath('//*[@id="treeArbreNoeudst'+str(id)+'"]')
 
-        filename = b.text().replace(" ", "_")+".csv"
+        filename = nodes.text().replace(" ", "_")+".csv"
 
-        b.click()
-        b = session.at_xpath('//*[@id="SP_EXPO"]')
-        b.click()
-        b = session.at_xpath('//*[@id="ctl00_CPH1_ucArbreNoeuds_ucNoeudInfos_RB_SELECT_PARAM"]')
-        b.click()
+        nodes.click()
+        nodes = session.at_xpath('//*[@id="SP_EXPO"]')
+        nodes.click()
+        nodes = session.at_xpath('//*[@id="ctl00_CPH1_ucArbreNoeuds_ucNoeudInfos_RB_SELECT_PARAM"]')
+        nodes.click()
 
         # select all data to export
-        b = session.at_xpath('//*[@id="ctl00_CPH1_ucArbreNoeuds_ucNoeudInfos_ddlChoixLib"]')
-        b.children()[-1].select_option()
+        nodes = session.at_xpath('//*[@id="ctl00_CPH1_ucArbreNoeuds_ucNoeudInfos_ddlChoixLib"]')
+        nodes.children()[-1].select_option()
 
         # get departament option
-        b = session.at_xpath('//*[@id="ctl00_CPH1_ucArbreNoeuds_ucNoeudInfos_ddlCriteresGeoExport"]')
+        nodes = session.at_xpath('//*[@id="ctl00_CPH1_ucArbreNoeuds_ucNoeudInfos_ddlCriteresGeoExport"]')
         # find good option
-        children = b.children()
+        children = nodes.children()
         for child in children:
             if child['value'] == "DEP17" :
                 child.select_option()
                 pass
 
         # select export date 1
-        b = session.at_xpath('//*[@id="ctl00_CPH1_ucArbreNoeuds_ucNoeudInfos_ddl_date1_export"]')
-        b.children()[0].select_option()
+        nodes = session.at_xpath('//*[@id="ctl00_CPH1_ucArbreNoeuds_ucNoeudInfos_ddl_date1_export"]')
+        nodes.children()[0].select_option()
 
         # select export date 2
-        b = session.at_xpath('//*[@id="ctl00_CPH1_ucArbreNoeuds_ucNoeudInfos_ddl_date2_export"]')
-        b.children()[-1].select_option()
+        nodes = session.at_xpath('//*[@id="ctl00_CPH1_ucArbreNoeuds_ucNoeudInfos_ddl_date2_export"]')
+        nodes.children()[-1].select_option()
 
 
-        b = session.at_xpath('//*[@id="ctl00_CPH1_ucArbreNoeuds_ucNoeudInfos_ibn_Export_Csv"]')
+        nodes = session.at_xpath('//*[@id="ctl00_CPH1_ucArbreNoeuds_ucNoeudInfos_ibn_Export_Csv"]')
 
-        b.left_click()
+        nodes.left_click()
 
-        print(b)
+        print(nodes)
 
         file = open(filename, "w")
         file.write(session.source())
