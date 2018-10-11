@@ -31,7 +31,7 @@ matrix:
       script:
         - cd Scrapper
         - ls -a
-        - sonar-scanner -X -Dproject.settings=./scrapper.properties -Dsonar.login=${SONAR_TOKEN}
+        - sonar-scanner -X -Dproject.settings=sonar-project.properties -Dsonar.login=${SONAR_TOKEN}
 
 
       
