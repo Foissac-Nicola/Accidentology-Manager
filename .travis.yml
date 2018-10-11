@@ -31,4 +31,4 @@ matrix:
         token: "${SONAR_CLOUD}"
       script:
         - cd Scrapper
-        - sonar-scanner -Dsonar.login=${SONAR_CLOUD} -Dsonar.password="" -Dsonar.projectKey=Foissac-Nicola_Accidentology-Manager -Dsonar.organization=foissac-nicola-github -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io
+        - sonar-scanner -X -Dsonar.login=${SONAR_CLOUD} -Dsonar.password="" -Dsonar.projectKey=Foissac-Nicola_Accidentology-Manager -Dsonar.organization=foissac-nicola-github -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io
