@@ -21,6 +21,8 @@ matrix:
       python: 3.6
       before_script:
         - cd Scrapper/
+      install:
+        - pip install -r Scrapper/requirements.txt
       jobs:
         include :
           - stage: "Tests"
