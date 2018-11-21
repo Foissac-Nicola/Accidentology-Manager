@@ -1,38 +1,52 @@
-from flask import Flask
+from flask import Flask, request
 from flask_restful import Resource, Api
-from flask_sqlalchemy import SQLAlchemy
+import psycopg2
 
-db = SQLAlchemy()
 app = Flask(__name__)
 
-POSTGRES = {
-    'user': 'postgres',
-    'pw': 'postgres',
-    'db': 'my_database',
-    'host': 'localhost',
-    'port': '5432',
-}
+connectionString = "dbname=postgres user=postgres host=localhost password=postgres port=5432"
+
+try:
+    conn = psycopg2.connect(connectionString)
+    cur = conn.cursor()
+except:
+    print("Connection failed")
 
 app.config['DEBUG'] = True
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS']= False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://%(user)s:\%(pw)s@%(host)s:%(port)s/%(db)s' % POSTGRES
 
-db.init_app(app)
 api = Api(app)
 
-class ServiceIndicator(Resource):
 
+class ServiceIndicator(Resource):
     def get(self):
-        return {"get": "example"}
+        try:
+            id = request.args.get('id')
+            rqt = "select * from test where id="+id
+            cur.execute(rqt)
+            list = []
+            for record in cur:
+                list.append(record)
+            return {"get": list}
+        except:
+            print("Request failed")
 
     def post(self):
-        return {"post": "example"}
+        try:
+            rqt = "select * from test"
+            cur.execute(rqt)
+            list = []
+            for record in cur:
+                list.append(record)
+            return {"post": list}
+        except:
+            print("Request failed")
 
     def delete(self):
         return {"delete": "example"}
 
     def put(self):
         return {"put": "example"}
+
 
 api.add_resource(ServiceIndicator,'/Indicator')
 if __name__ == '__main__':
