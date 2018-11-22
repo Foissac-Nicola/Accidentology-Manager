@@ -17,37 +17,40 @@ app.config['DEBUG'] = True
 
 api = Api(app)
 
+# rqt a utiliser plustard
+# rqt = "SELECT indicateur " \
+#         "FROM " \
+#         "usager_accidente_par_vehicule as usg AND" \
+#         "usg  LEFT OUTER JOIN ON type_vehicule ( usg.id_type_vehicule. = type_vehicule.id_typeVehicule) AND" \
+#         "usg LEFT OUTER JOIN ON type_route ( usg.id_type_route. = type_route.id_typeRoute) AND" \
+#         "usg LEFT OUTER JOIN ON meteo ( usg.id_meteo. = meteo.id_meteo)" \
+#         "WHERE" \
+#         "type_route.type_route = " + request.args.get('type_route')+ \
+#         "AND usg.longitude < " + (waypoint['x'] - interval)+ \
+#         "AND usg.longitude > " + (waypoint['x'] + interval)+ \
+#         "AND usg.latitude < " + (waypoint['y'] - interval)+ \
+#         "AND usg.latitude > " + (waypoint['y'] + interval)
+
 
 def create_indicator_request(waypoint):
     interval = 10 # valeur à définir
-    if request.args.get('type_route') is None:
-        return
 
     rqt = "SELECT indicateur " \
         "FROM " \
-        "usager_accidente_par_vehicule as usg AND" \
-        "usg  LEFT OUTER JOIN ON type_vehicule ( usg.id_type_vehicule. = type_vehicule.id_typeVehicule) AND" \
-        "usg LEFT OUTER JOIN ON type_route ( usg.id_type_route. = type_route.id_typeRoute) AND" \
-        "usg LEFT OUTER JOIN ON meteo ( usg.id_meteo. = meteo.id_meteo)" \
+        "usager_accidente_par_vehicule as usg" \
         "WHERE" \
         "type_route.type_route = " + request.args.get('type_route')+ \
-        "AND longitude < " + (waypoint['x'] - interval)+ \
-        "AND longitude > " + (waypoint['x'] + interval)+ \
-        "AND latitude < " + (waypoint['y'] - interval)+ \
-        "AND latitude > " + (waypoint['y'] + interval)
-
-    if request.args.get('type_vehicule') is not None:
-        rqt += "AND type_vehicule.type_vehicule = "+request.args.get('type_vehicule')
-    if request.args.get('type_vehicule') is not None:
-        rqt += "AND meteo.conditions_meteo = " + request.args.get('meteo')
-    if request.args.get('type_vehicule') is not None:
-        rqt += "AND usager.categorie_usager = " + request.args.get('meteo')
+        "AND usg.longitude < " + (waypoint['x'] - interval)+ \
+        "AND usg.longitude > " + (waypoint['x'] + interval)+ \
+        "AND usg.latitude < " + (waypoint['y'] - interval)+ \
+        "AND usg.latitude > " + (waypoint['y'] + interval)
     return rqt
 
 
 class ServiceIndicator(Resource):
     def get(self):
         try:
+            print(len(request.args))
             if request.args.get('id') is None:
                 return {"get": []}
 
@@ -63,7 +66,7 @@ class ServiceIndicator(Resource):
           #       listAccident = []
           #       for record in cur:
           #           listAccident.append(record)
-          #       waypoint['Indicator'] = mean([accident[13] for accident in listAccident])
+          #       waypoint['Indicator'] = mean([accident for accident in listAccident])
 
             id = request.args.get('id')
             rqt = "select * from test where id=" + id
@@ -76,7 +79,19 @@ class ServiceIndicator(Resource):
             print("Request failed")
 
     def post(self):
-        return {"post": list}
+        try:
+            print(len(request.args))
+            if request.args.get('id') is None:
+                return {"post": []}
+            id = request.args.get('id')
+            rqt = "select * from test where id=" + id
+            cur.execute(rqt)
+            list = []
+            for record in cur:
+                list.append(record)
+            return {"post": list}
+        except:
+            print("Request failed")
 
     def delete(self):
         return {"delete": "example"}
