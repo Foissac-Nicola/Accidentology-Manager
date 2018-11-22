@@ -9,5 +9,5 @@ setup(
     author='Team Accidentology-Manager',
     author_email='',
     description='',
-    install_requires=['flask', 'flask_restful', 'psycopg2']
+    install_requires=['flask', 'flask_restful', 'psycopg2', 'numpy']
 )
