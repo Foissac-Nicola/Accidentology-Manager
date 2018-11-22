@@ -17,11 +17,42 @@ app.config['DEBUG'] = True
 api = Api(app)
 
 
+def create_indicator_requete():
+    type_vehicule = request.args.get('type_vehicule')
+    type_route = request.args.get('type_route')
+    meteo = request.args.get('meteo')
+    cat_usager = request.args.get('cat_usager')
+
+    rqt = "SELECT indicateur " \
+        "FROM " \
+        "usager_accidente_par_vehicule as usg AND" \
+        "usg  LEFT OUTER JOIN ON type_vehicule ( usg.id_type_vehicule. = type_vehicule.id_typeVehicule) AND" \
+        "usg LEFT OUTER JOIN ON type_route ( usg.id_type_route. = type_route.id_typeRoute) AND" \
+        "usg LEFT OUTER JOIN ON meteo ( usg.id_meteo. = meteo.id_meteo) AND" \
+        "WHERE" \
+        "type_vehicule.type_vehicule = "+type_vehicule + \
+        "type_route.type_route = " + type_route + \
+        "meteo.conditions_meteo = " + meteo + \
+        "usager.categorie_usager = " + cat_usager
+    return rqt
+
+
 class ServiceIndicator(Resource):
     def get(self):
         try:
+            if request.args.get('id') is None:
+                return {"get": []}
+
+#           if (request.args.get('type_vehicule') is None or
+#               request.args.get('type_route') is None or
+#               request.args.get('meteo') is None or
+#               request.args.get('categorie-usager') is None):
+#               return {"get": []}
+
+#           rqt = create_indicator_requete()
+
             id = request.args.get('id')
-            rqt = "select * from test where id="+id
+            rqt = "select * from test where id=" + id
             cur.execute(rqt)
             list = []
             for record in cur:
@@ -31,15 +62,7 @@ class ServiceIndicator(Resource):
             print("Request failed")
 
     def post(self):
-        try:
-            rqt = "select * from test"
-            cur.execute(rqt)
-            list = []
-            for record in cur:
-                list.append(record)
-            return {"post": list}
-        except:
-            print("Request failed")
+        return {"post": list}
 
     def delete(self):
         return {"delete": "example"}
