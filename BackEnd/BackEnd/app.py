@@ -100,7 +100,24 @@ class ServiceIndicator(Resource):
         return {"put": "example"}
 
 
+class Test(Resource):
+    def post(self):
+        try:
+            bidule = request.get_json()
+
+            for f in bidule["response"]["route"]:
+                value = random.randint(0, 2)
+                f["dangerLevel"] = str(value)
+                print(f["dangerLevel"])
+
+            return bidule
+        except:
+            print("Request failed")
+
+
 api.add_resource(ServiceIndicator,'/Indicator')
 if __name__ == '__main__':
     app.run()
-
+api.add_resource(Test,'/test')
+if __name__ == '__main__':
+    app.run()
