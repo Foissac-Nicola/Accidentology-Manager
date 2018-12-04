@@ -116,8 +116,6 @@ class Test(Resource):
 
 
 api.add_resource(ServiceIndicator,'/Indicator')
-if __name__ == '__main__':
-    app.run()
 api.add_resource(Test,'/test')
 if __name__ == '__main__':
     app.run()
