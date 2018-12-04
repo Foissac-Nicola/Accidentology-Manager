@@ -1,0 +1,7 @@
+organization=foissac-nicola-github
+projectKey=Foissac-Nicola_Accidentology-Manager
+serverUrl=https://sonarcloud.io
+serverVersion=7.4.0.17996
+dashboardUrl=https://sonarcloud.io/dashboard?id=Foissac-Nicola_Accidentology-Manager
+ceTaskId=AWZkqBF0YzAYGqvLqjTb
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AWZkqBF0YzAYGqvLqjTb
