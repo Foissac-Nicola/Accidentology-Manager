@@ -2,6 +2,7 @@ from flask import Flask, request
 from flask_restful import Resource, Api
 import psycopg2
 import math
+import json
 from numpy import mean
 
 app = Flask(__name__)
@@ -34,8 +35,10 @@ api = Api(app)
 
 
 def create_indicator_request(first_waypoint,second_waypoint):
-    center_waypoint = {'lon': (second_waypoint['lon']-first_waypoint['lon']), 'lat': (second_waypoint['lat']-first_waypoint['lat'])}
-    interval = math.sqrt((second_waypoint['lon']-first_waypoint['lon'])**2+(second_waypoint['lat']-first_waypoint['lat'])**2)
+    first_waypoint_coord = first_waypoint.split(",")
+    second_waypoint_coord = second_waypoint.split(",")
+    center_waypoint = [(second_waypoint[0]-first_waypoint_coord[0]), (second_waypoint_coord[1]-first_waypoint[1])]
+    interval = math.sqrt((second_waypoint[0]-first_waypoint_coord[0])**2+(second_waypoint_coord[1]-first_waypoint[1])**2)
 
     rqt = "SELECT indicateur " \
         "FROM " \
@@ -50,7 +53,7 @@ def create_indicator_request(first_waypoint,second_waypoint):
 class ServiceIndicator(Resource):
     def get(self):
         try:
-            print(len(request.args))
+            print(json.loads(request.text))
             if request.args.get('id') is None:
                 return {"gett": []}
             data = request.args
@@ -76,20 +79,27 @@ class ServiceIndicator(Resource):
 
     def post(self):
         try:
-            print(len(request.args))
-            if request.args.get('id') is None:
-                return {"postt": []}
-            data = request.args
-            route = []
-            #   for index, waypoint in enumerate(request.args.get('waypoints')):
-            #       if index == len(request.args.get('waypoints'))
-            #       rqt = create_indicator_request(waypoint,request.args.get('waypoints'))[index])
-            #       cursor.execute(rqt)
-            #       listAccident = []
-            #       for record in cursor:
-            #           listAccident.append(record)
-            #       route.add(mean([accident for accident in listAccident]))
-            #
+            json = request.json['response']
+            print(json['route']['shape'])
+            if json is None:
+                return {"post": []}
+            routes = json['route']
+            for route in routes:
+                waypoints = route['shape']
+                moyIndicator = []
+                print(waypoints)
+                #for index, waypoint in enumerate(waypoints):
+                #       if index == len(request.args.get('waypoints'))
+                #           break
+                #       rqt = create_indicator_request(waypoint,waypoints[index+1])
+                #       cursor.execute(rqt)
+                #       listAccident = []
+                #       for record in cursor:
+                #           listAccident.append(record)
+                #      moyIndicator.add(mean([accident for accident in listAccident]))
+                #route['dangerLevel'] = mean(moyIndicator)
+            #json['route'] = route
+            #return {"response": json}
             id = request.args.get('id')
             rqt = "select * from test where id=" + id
             cursor.execute(rqt)
@@ -106,23 +116,7 @@ class ServiceIndicator(Resource):
     def put(self):
         return {"put": "example"}
 
-class Test(Resource):
-    def post(self):
-        try:
-            bidule = request.get_json()
-
-            for f in bidule["response"]["route"]:
-                value = random.randint(0, 2)
-                f["dangerLevel"] = str(value)
-                print(f["dangerLevel"])
-
-            return bidule
-        except:
-            print("Request failed")
-
-
 api.add_resource(ServiceIndicator,'/Indicator')
-api.add_resource(Test,'/test')
 if __name__ == '__main__':
     app.run()
 
