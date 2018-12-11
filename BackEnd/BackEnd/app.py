@@ -35,18 +35,20 @@ api = Api(app)
 
 
 def create_indicator_request(first_waypoint,second_waypoint):
-    first_waypoint_coord = first_waypoint.split(",")
-    second_waypoint_coord = second_waypoint.split(",")
-    center_waypoint = [(second_waypoint[0]-first_waypoint_coord[0]), (second_waypoint_coord[1]-first_waypoint[1])]
-    interval = math.sqrt((second_waypoint[0]-first_waypoint_coord[0])**2+(second_waypoint_coord[1]-first_waypoint[1])**2)
+    first_waypoint_coord = [float(x) for x in first_waypoint.split(",")]
+    second_waypoint_coord = [float(x) for x in second_waypoint.split(",")]
 
-    rqt = "SELECT indicateur " \
-        "FROM " \
-        "usager_accidente_par_vehicule as usg" \
-        "WHERE" \
-        "type_route.type_route = " + request.args.get('type_route')+ \
-        "AND usg.longitude < " + (center_waypoint['x'] - interval)+ \
-        "AND usg.longitude > " + (center_waypoint['x'] + interval)
+    center_waypoint = [(second_waypoint_coord[0]-first_waypoint_coord[0]), (second_waypoint_coord[1]-first_waypoint_coord[1])]
+    interval = math.sqrt((second_waypoint_coord[0]-first_waypoint_coord[0])**2+(second_waypoint_coord[1]-first_waypoint_coord[1])**2)
+
+    rqt = ("SELECT indicateur " 
+        "FROM " 
+        "usager_accidente_par_vehicule as usg " 
+        "WHERE " 
+        "usg.longitude < " + str((center_waypoint[0] + interval))+
+        " AND usg.longitude > " + str((center_waypoint[0] - interval))+
+        " AND usg.latitude < " + str((center_waypoint[1] + interval))+
+        " AND usg.latitude > " + str((center_waypoint[1] - interval)))
     return rqt
 
 
@@ -80,33 +82,40 @@ class ServiceIndicator(Resource):
     def post(self):
         try:
             json = request.json['response']
-            print(json['route']['shape'])
             if json is None:
                 return {"post": []}
+            waypoint_interval = 100
             routes = json['route']
+
             for route in routes:
                 waypoints = route['shape']
                 moyIndicator = []
-                print(waypoints)
-                #for index, waypoint in enumerate(waypoints):
-                #       if index == len(request.args.get('waypoints'))
-                #           break
-                #       rqt = create_indicator_request(waypoint,waypoints[index+1])
-                #       cursor.execute(rqt)
-                #       listAccident = []
-                #       for record in cursor:
-                #           listAccident.append(record)
-                #      moyIndicator.add(mean([accident for accident in listAccident]))
-                #route['dangerLevel'] = mean(moyIndicator)
-            #json['route'] = route
-            #return {"response": json}
-            id = request.args.get('id')
-            rqt = "select * from test where id=" + id
-            cursor.execute(rqt)
-            list = []
-            for record in cursor:
-                list.append(record)
-            return {"post": list}
+                for index, waypoint in enumerate(waypoints):
+                    if index == len(waypoints):
+                        break
+
+                    if index%waypoint_interval == 0:
+                        rqt = create_indicator_request(waypoint,waypoints[index+1])
+                        cursor.execute(rqt)
+                        listAccident = []
+
+                        for record in cursor:
+                            listAccident.append(record)
+                        #moyIndicator.add(mean([accident for accident in listAccident]))
+                        moyIndicator.append(0.6)
+
+                route['dangerLevel'] = mean(moyIndicator)
+
+            json['route'] = route
+
+            return {"response": json}
+            # id = request.args.get('id')
+            # rqt = "select * from test where id=" + id
+            # cursor.execute(rqt)
+            # list = []
+            # for record in cursor:
+            #     list.append(record)
+            # return {"post": list}
         except:
             print("Request failed")
 
