@@ -7,7 +7,7 @@ from numpy import mean
 
 app = Flask(__name__)
 
-connectionString = "dbname=postgres user=postgres host=localhost password=postgres port=5432"
+connectionString = "dbname=accidentology user=postgres host=localhost password=postgres port=5432"
 
 try:
     conn = psycopg2.connect(connectionString)
