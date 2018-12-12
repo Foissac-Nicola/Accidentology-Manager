@@ -39,7 +39,7 @@ def create_indicator_request(first_waypoint,second_waypoint):
     second_waypoint_coord = [round(float(x),7) for x in second_waypoint.split(",")]
     center_waypoint = [round((second_waypoint_coord[0]+first_waypoint_coord[0])/2,7), round((second_waypoint_coord[1]+first_waypoint_coord[1])/2,7)]
     rayon = round(math.sqrt((center_waypoint[0]-first_waypoint_coord[0])**2)+((center_waypoint[1]-first_waypoint_coord[1])**2),7)
-    rqt = ("SELECT indicateur " 
+    rqt = ("SELECT avg(indicateur) " 
         "FROM " 
         "accident " 
         "WHERE "
@@ -66,12 +66,9 @@ class ServiceIndicator(Resource):
                     if index%waypoint_interval == 0:
                         rqt = create_indicator_request(waypoint,waypoints[index+waypoint_interval])
                         cursor.execute(rqt)
-                        listAccident = []
-
                         for record in cursor:
-                            listAccident.append(record[0])
-                        if len(listAccident) >0:
-                            moyIndicator.append(mean([accident for accident in listAccident]))
+                            if record[0]:
+                                moyIndicator.append(record[0])
 
                 route['dangerLevel'] = mean(moyIndicator)
 
@@ -89,22 +86,22 @@ class ServiceIndicator(Resource):
             waypoint_interval = 100
             routes = json['route']
 
-            for route in routes:
+            for route in request.json['response']['route']:
                 waypoints = route['shape']
                 moyIndicator = []
+                cpt = 0
                 for index, waypoint in enumerate(waypoints):
                     if index > len(waypoints)-waypoint_interval:
                         break
 
                     if index%waypoint_interval == 0:
+                        cpt = cpt+1
+                        print(cpt)
                         rqt = create_indicator_request(waypoint,waypoints[index+waypoint_interval])
                         cursor.execute(rqt)
-                        listAccident = []
-
                         for record in cursor:
-                            listAccident.append(record[0])
-                        if len(listAccident) >0:
-                            moyIndicator.append(mean([accident for accident in listAccident]))
+                            if record[0]:
+                                moyIndicator.append(record[0])
 
                 route['dangerLevel'] = mean(moyIndicator)
 
