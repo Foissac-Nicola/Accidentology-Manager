@@ -15762,8 +15762,10 @@ module.exports={
 			}
 
 			if (this._autocomplete && document.activeElement === this._elem) {
+
 				if (this._timer) {
 					clearTimeout(this._timer);
+
 				}
 				this._timer = setTimeout(L.Util.bind(function() { this._complete(this._autocomplete); }, this),
 					this.options.timeout);
@@ -15820,8 +15822,10 @@ module.exports={
 
 		_complete: function(completeFn, trySelect) {
 			var v = this._elem.value;
+
 			function completeResults(results) {
 				this._lastCompletedText = v;
+
 				if (trySelect && results.length === 1) {
 					this._resultSelected(results[0])();
 				} else {
@@ -15830,6 +15834,7 @@ module.exports={
 			}
 
 			if (!v) {
+
 				return;
 			}
 
@@ -15893,7 +15898,7 @@ module.exports={
 				!this._router.requiresMoreDetail) {
 				return;
 			}
-
+            console.log("Test 6");
 			var map = this._map;
 			if (this._router.requiresMoreDetail(this._selectedRoute,
 					map.getZoom(), map.getBounds())) {
@@ -15916,6 +15921,7 @@ module.exports={
 
 		onAdd: function(map) {
 			if (this.options.autoRoute) {
+			    console.log("Test 1");
 				this.route();
 			}
 
@@ -16040,30 +16046,47 @@ module.exports={
 			return false;
 		},
 
+        _selectPrimaryColorFromDangerLevel: function(dangerLevel){
+		    console.log(dangerLevel);
+            if(dangerLevel < "3.33"){
+                return "#35C236";
+            }
+            else if(dangerLevel > "6.67"){
+                return "#ED233B";
+
+            }
+            else{
+                return "#F3A608";
+            }
+
+        },
+
+
+
         _selectColorFromDanger: function(dangerLevel,alt){
             console.log(dangerLevel);
-            if(dangerLevel === "1"){
+            if(dangerLevel < "3.33"){
                 if(alt){
                     return {styles : [{color: 'black', opacity: 0.07, weight: 9},
                     {color: 'white', opacity: 0.4, weight: 6},
-                    {color: 'yellow', opacity: 0.5, weight: 2}]};
+                    {color: '#35C236', opacity: 0.5, weight: 2}]};
                 }
                 else{
                     return {styles : [{color: 'black', opacity: 0.15, weight: 9},
                     {color: 'white', opacity: 0.8, weight: 6},
-                    {color: 'yellow', opacity: 1, weight: 2}]};
+                    {color: '#35C236', opacity: 1, weight: 2}]};
                 }
             }
-            else if(dangerLevel === "2"){
+            else if(dangerLevel > "6.67"){
                  if(alt){
                 return {styles : [{color: 'black', opacity: 0.07, weight: 9},
                 {color: 'white', opacity: 0.4, weight: 6},
-                {color: 'red', opacity: 0.5, weight: 2}]};
+                {color: '#ED233B', opacity: 0.5, weight: 2}]};
                  }
                  else{
                 return {styles : [{color: 'black', opacity: 0.15, weight: 9},
                 {color: 'white', opacity: 0.8, weight: 6},
-                {color: 'red', opacity: 1, weight: 2}]};
+                {color: '#ED233B', opacity: 1, weight: 2}]};
                  }
 
             }
@@ -16071,18 +16094,20 @@ module.exports={
                  if(alt){
                 return {styles : [{color: 'black', opacity: 0.07, weight: 9},
                 {color: 'white', opacity: 0.4, weight: 6},
-                {color: 'green', opacity: 0.5, weight: 2}]};
+                {color: '#F3A608', opacity: 0.5, weight: 2}]};
                  }
                  else{
                 return {styles : [{color: 'black', opacity: 0.15, weight: 9},
                 {color: 'white', opacity: 0.8, weight: 6},
-                {color: 'green', opacity: 1, weight: 2}]};
+                {color: '#F3A608', opacity: 1, weight: 2}]};
                  }
             }
         },
 
 		_updateLines: function(routes) {
-			var addWaypoints = this.options.addWaypoints !== undefined ?
+            document.getElementById("loading").setAttribute("style"," display : none;");
+
+            var addWaypoints = this.options.addWaypoints !== undefined ?
 				this.options.addWaypoints : true;
 			this._clearLines();
 
@@ -16105,6 +16130,14 @@ module.exports={
 				}, this._selectColorFromDanger(routes.route.dangerLevel,false)));
 			this._line.addTo(this._map);
 			this._hookEvents(this._line);
+
+            /*var minimized = document.getElementsByClassName("leaflet-routing-alt leaflet-routing-alt-minimized");
+
+            for(var i = 0; i < minimized.length; i++){
+                minimized[i].setAttribute("style","background-color: rgba(136, 136, 136, 0.0);");
+            }
+
+            document.getElementsByClassName("leaflet-routing-alt")[0].setAttribute("style","background-color: rgba(136, 136, 136, 0.3);");*/
 		},
 
 		_hookEvents: function(l) {
@@ -16124,6 +16157,7 @@ module.exports={
 		_onWaypointsChanged: function(e) {
 			if (this.options.autoRoute) {
 				this.route({});
+                console.log("Test 2");
 			}
 			if (!this._plan.isReady()) {
 				this._clearLines();
@@ -16133,6 +16167,7 @@ module.exports={
 		},
 
 		_setupRouteDragging: function() {
+            console.log("Test 3");
 			var timer = 0,
 				waypoints;
 
@@ -16146,6 +16181,7 @@ module.exports={
 							geometryOnly: true,
 							callback: L.bind(this._updateLineCallback, this)
 						});
+
 						timer = undefined;
 					}, this), this.options.routeDragInterval);
 				}
@@ -16190,6 +16226,11 @@ module.exports={
 
 				wps = options && options.waypoints || this._plan.getWaypoints();
 				this.fire('routingstart', {waypoints: wps});
+
+                document.getElementById("messages").setAttribute("style"," display : none;");
+                document.getElementById("loading").setAttribute("style"," display : block;");
+                app.control.hide();
+
 				this._pendingRequest = this._router.route(wps, function(err, routes) {
 					this._pendingRequest = null;
 
@@ -16763,7 +16804,7 @@ module.exports = L.Routing = {
 				opacity: 1,
 				fillOpacity: 0.7
 			},
-			summaryTemplate: '<h2>{name}</h2><h3>{distance}, {time}</h3>',
+			summaryTemplate: "<h2>{name}</h2><h3 style='color:{color}'>Danger : {fixedNumber}&nbsp;&nbsp;-&nbsp;&nbsp;{distance}, {time} &nbsp; <img src='images/car_icon.png' height='16' width='16'> &nbsp; <button onclick='app.displayInstrutions(this)'>&#10132;</button></h3>",
 			timeTemplate: '{time}',
 			containerClassName: '',
 			alternativeClassName: '',
@@ -16834,17 +16875,35 @@ module.exports = L.Routing = {
 				this._altElements.push(altDiv);
 			}
 
+           /* var html = this.getContainer().getElementsByClassName("leaflet-routing-alternatives-container");
+
+            if(html !== "undefined" && html !== null){
+                if(html[0] !== "undefined" && html[0] !== null){
+                    var routesMenu = document.getElementById("routes");
+                    routesMenu.appendChild(html[0]);
+                }
+            }*/
+
 			this._selectRoute({route: this._routes[0], alternatives: this._routes.slice(1)});
 
 			return this;
 		},
 
 		show: function() {
+            this.options.autoRoute = false;
+            document.getElementsByClassName("routesToDisplay")[0].setAttribute('style', 'display : none');
 			L.DomUtil.removeClass(this._container, 'leaflet-routing-container-hide');
 		},
 
 		hide: function() {
+            this.options.autoRoute = true;
+            document.getElementsByClassName("routesToDisplay")[0].setAttribute('style', 'display : block');
+		    if(!this.getPlan().isReady()){
+                document.getElementById("messages").setAttribute("style"," display : block;");
+            }
+
 			L.DomUtil.addClass(this._container, 'leaflet-routing-container-hide');
+
 		},
 
 		_toggle: function() {
@@ -16853,17 +16912,21 @@ module.exports = L.Routing = {
 		},
 
 		_createAlternative: function(alt, i) {
+		    var fixednumber = parseFloat(alt.dangerLevel).toFixed(2);
+		    console.log(fixednumber);
 			var altDiv = L.DomUtil.create('div', 'leaflet-routing-alt ' +
 				this.options.alternativeClassName +
-				(i > 0 ? ' leaflet-routing-alt-minimized ' + this.options.minimizedClassName : '')),
+				(i > 0 ? ' leaflet-routing-alt-minimized ' + this.options.minimizedClassName : ' selectedRoute ')),
 				template = this.options.summaryTemplate,
 				data = L.extend({
 					name: alt.name,
+                    fixedNumber: fixednumber,
+                    color: this._selectPrimaryColorFromDangerLevel(alt.dangerLevel),
 					distance: this._formatter.formatDistance(alt.summary.totalDistance, this.options.totalDistanceRoundingSensitivity),
 					time: this._formatter.formatTime(alt.summary.totalTime)
 				}, alt);
 			altDiv.innerHTML = typeof(template) === 'function' ? template(data) : L.Util.template(template, data);
-			L.DomEvent.addListener(altDiv, 'click', this._onAltClicked, this);
+            L.DomEvent.addListener(altDiv, 'click', this._onAltClicked, this);
 			this.on('routeselected', this._selectAlt, this);
 
 			altDiv.appendChild(this._createItineraryContainer(alt));
@@ -16952,6 +17015,9 @@ module.exports = L.Routing = {
 					n = this._altElements[j];
 					classFn = j === e.route.routesIndex ? 'removeClass' : 'addClass';
 					L.DomUtil[classFn](n, 'leaflet-routing-alt-minimized');
+
+                    classFn = j === e.route.routesIndex ? 'addClass' : 'removeClass';
+                    L.DomUtil[classFn](n, 'selectedRoute');
 					if (this.options.minimizedClassName) {
 						L.DomUtil[classFn](n, this.options.minimizedClassName);
 					}
@@ -18404,7 +18470,6 @@ module.exports = L.Routing = {
 					this._map.removeLayer(this._newWp.lines[i]);
 				}
 			}
-
 			delete this._map;
 		},
 

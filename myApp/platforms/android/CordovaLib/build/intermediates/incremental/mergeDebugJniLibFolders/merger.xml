@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="C:\Users\Matthieu\Desktop\Test_Cordova_Returns\myApp\platforms\android\CordovaLib\src\main\jniLibs"/></dataSet><dataSet config="debug"><source path="C:\Users\Matthieu\Desktop\Test_Cordova_Returns\myApp\platforms\android\CordovaLib\src\debug\jniLibs"/></dataSet></merger>
+<merger version="3"><dataSet config="main"><source path="D:\ProjetArchi\Accidentology-Manager\myApp\platforms\android\CordovaLib\src\main\jniLibs"/></dataSet><dataSet config="debug"><source path="D:\ProjetArchi\Accidentology-Manager\myApp\platforms\android\CordovaLib\src\debug\jniLibs"/></dataSet></merger>

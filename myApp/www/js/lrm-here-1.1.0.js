@@ -160,6 +160,7 @@ module.exports = haversine
 		},
 
 		route: function(waypoints, callback, context, options) {
+
 			var timedOut = false,
 				wps = [],
 				url,
@@ -169,7 +170,7 @@ module.exports = haversine
 
 			options = options || {};
 			url = this.buildRouteUrl(waypoints, options);
-
+			console.log(url);
 			timer = setTimeout(function() {
 								timedOut = true;
 								callback.call(context || callback, {
@@ -196,22 +197,23 @@ module.exports = haversine
 				clearTimeout(timer);
 				if (!timedOut) {
 					if (!err) {
-						data = JSON.parse(resp.responseText);
 						
 						var xhr = new XMLHttpRequest();
 
-						var url = "http://10.0.2.2:5000/test";
+						var url = "http://10.0.2.2:5000/Indicator";
 						xhr.open("POST", url, true);
 						xhr.setRequestHeader("Content-type", "application/json");
+                        xhr.setRequestHeader('Cache-Control', 'no-cache');
 						xhr.onreadystatechange = function () { 
 						    if (xhr.readyState == 4 && xhr.status == 200) {
+						    	document.getElementsByClassName("routesToDisplay")[0].setAttribute('style', 'display:block;');
 						    	data = null;
 						        var test = JSON.parse(xhr.response);
-						        console.log(test);
+						        //console.log(test);
 						        this._routeDone(test, wps, callback, context);
 						    }
 						}.bind(this);
-						var dataJson = JSON.stringify(data);
+						var dataJson = resp.responseText;
 						xhr.send(dataJson);
 
 

@@ -9,6 +9,15 @@
   "installed_plugins": {
     "cordova-plugin-whitelist": {
       "PACKAGE_NAME": "bidule.com"
+    },
+    "cordova-plugin-geolocation": {
+      "PACKAGE_NAME": "bidule.com"
+    },
+    "cordova-plugin-locationservices": {
+      "PACKAGE_NAME": "bidule.com"
+    },
+    "cordova-plugin-splashscreen": {
+      "PACKAGE_NAME": "bidule.com"
     }
   },
   "dependent_plugins": {}
