@@ -1,15 +1,17 @@
 from flask import Flask, request
 from flask_restful import Resource, Api
 import psycopg2
+import math
+import json
 from numpy import mean
 
 app = Flask(__name__)
 
-connectionString = "dbname=postgres user=postgres host=localhost password=postgres port=5432"
+connectionString = "dbname=accidentology_light user=postgres host=localhost password=postgres port=5432"
 
 try:
     conn = psycopg2.connect(connectionString)
-    cur = conn.cursor()
+    cursor = conn.cursor()
 except:
     print("Connection failed")
 
@@ -17,7 +19,7 @@ app.config['DEBUG'] = True
 
 api = Api(app)
 
-# rqt a utiliser plustard
+# rqt a modifier/utiliser plustard
 # rqt = "SELECT indicateur " \
 #         "FROM " \
 #         "usager_accidente_par_vehicule as usg AND" \
@@ -26,70 +28,86 @@ api = Api(app)
 #         "usg LEFT OUTER JOIN ON meteo ( usg.id_meteo. = meteo.id_meteo)" \
 #         "WHERE" \
 #         "type_route.type_route = " + request.args.get('type_route')+ \
-#         "AND usg.longitude < " + (waypoint['x'] - interval)+ \
-#         "AND usg.longitude > " + (waypoint['x'] + interval)+ \
-#         "AND usg.latitude < " + (waypoint['y'] - interval)+ \
-#         "AND usg.latitude > " + (waypoint['y'] + interval)
+#         "AND usg.longitude < " + (waypoint['lon'] - interval)+ \
+#         "AND usg.longitude > " + (waypoint['lon'] + interval)+ \
+#         "AND usg.latitude < " + (waypoint['lat'] - interval)+ \
+#         "AND usg.latitude > " + (waypoint['lat'] + interval)
 
 
-def create_indicator_request(waypoint):
-    interval = 10 # valeur à définir
-
-    rqt = "SELECT indicateur " \
-        "FROM " \
-        "usager_accidente_par_vehicule as usg" \
-        "WHERE" \
-        "type_route.type_route = " + request.args.get('type_route')+ \
-        "AND usg.longitude < " + (waypoint['x'] - interval)+ \
-        "AND usg.longitude > " + (waypoint['x'] + interval)+ \
-        "AND usg.latitude < " + (waypoint['y'] - interval)+ \
-        "AND usg.latitude > " + (waypoint['y'] + interval)
+def create_indicator_request(first_waypoint,second_waypoint):
+    first_waypoint_coord = [round(float(x),7) for x in first_waypoint.split(",")]
+    second_waypoint_coord = [round(float(x),7) for x in second_waypoint.split(",")]
+    center_waypoint = [round((second_waypoint_coord[0]+first_waypoint_coord[0])/2,7), round((second_waypoint_coord[1]+first_waypoint_coord[1])/2,7)]
+    rayon = round(math.sqrt((center_waypoint[0]-first_waypoint_coord[0])**2)+((center_waypoint[1]-first_waypoint_coord[1])**2),7)
+    rqt = ("SELECT avg(indicateur) " 
+        "FROM " 
+        "accident " 
+        "WHERE "
+        +str(rayon)+" > |/((accident.lon-("+str(center_waypoint[1])+"))^2+(+accident.lat-("+str(center_waypoint[0])+"))^2)")
     return rqt
 
 
 class ServiceIndicator(Resource):
     def get(self):
         try:
-            print(len(request.args))
-            if request.args.get('id') is None:
-                return {"get": []}
+            json = request.json['response']
+            if json is None:
+                return {"post": []}
+            waypoint_interval = 100
+            routes = json['route']
 
-          # if (request.args.get('type_vehicule') is None or
-          #     request.args.get('type_route') is None or
-          #     request.args.get('meteo') is None or
-          #     request.args.get('categorie-usager') is None):
-          #     return {"get": []}
-          #
-          #   for waypoint in request.args.get('waypoints'):
-          #       rqt = create_indicator_request(waypoint)
-          #       cur.execute(rqt)
-          #       listAccident = []
-          #       for record in cur:
-          #           listAccident.append(record)
-          #       waypoint['Indicator'] = mean([accident for accident in listAccident])
+            for route in routes:
+                waypoints = route['shape']
+                moyIndicator = []
+                for index, waypoint in enumerate(waypoints):
+                    if index > len(waypoints)-waypoint_interval:
+                        break
 
-            id = request.args.get('id')
-            rqt = "select * from test where id=" + id
-            cur.execute(rqt)
-            list = []
-            for record in cur:
-                list.append(record)
-            return {"get": list}
+                    if index%waypoint_interval == 0:
+                        rqt = create_indicator_request(waypoint,waypoints[index+waypoint_interval])
+                        cursor.execute(rqt)
+                        for record in cursor:
+                            if record[0]:
+                                moyIndicator.append(record[0])
+
+                route['dangerLevel'] = mean(moyIndicator)
+
+            json['route'] = route
+
+            return {"response": json}
         except:
             print("Request failed")
 
     def post(self):
         try:
-            print(len(request.args))
-            if request.args.get('id') is None:
+            json = request.json['response']
+            if json is None:
                 return {"post": []}
-            id = request.args.get('id')
-            rqt = "select * from test where id=" + id
-            cur.execute(rqt)
-            list = []
-            for record in cur:
-                list.append(record)
-            return {"post": list}
+            waypoint_interval = 100
+            routes = json['route']
+
+            for route in request.json['response']['route']:
+                waypoints = route['shape']
+                moyIndicator = []
+                cpt = 0
+                for index, waypoint in enumerate(waypoints):
+                    if index > len(waypoints)-waypoint_interval:
+                        break
+
+                    if index%waypoint_interval == 0:
+                        cpt = cpt+1
+                        print(cpt)
+                        rqt = create_indicator_request(waypoint,waypoints[index+waypoint_interval])
+                        cursor.execute(rqt)
+                        for record in cursor:
+                            if record[0]:
+                                moyIndicator.append(record[0])
+
+                route['dangerLevel'] = mean(moyIndicator)
+
+            json['route'] = route
+
+            return {"response": json}
         except:
             print("Request failed")
 
@@ -113,6 +131,7 @@ class Test(Resource):
             return bidule
         except:
             print("Request failed")
+
 
 
 api.add_resource(ServiceIndicator,'/Indicator')
