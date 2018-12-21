@@ -1,0 +1,34 @@
+{
+    "logs": [
+        {
+            "outputFile": "C:\\Users\\Matthieu\\Desktop\\Test_Cordova_Returns\\myApp\\platforms\\android\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-en-rIN\\values-en-rIN.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\Matthieu\\.gradle\\caches\\transforms-1\\files-1.1\\support-compat-26.1.0.aar\\ee6e74cf85dd74147021777ef08c3aa5\\res\\values-en-rIN\\values-en-rIN.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    }
+                }
+            ]
+        },
+        {
+            "outputFile": "D:\\ProjetArchi\\Accidentology-Manager\\myApp\\platforms\\android\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-en-rIN\\values-en-rIN.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\Matthieu\\.gradle\\caches\\transforms-1\\files-1.1\\support-compat-26.1.0.aar\\ee6e74cf85dd74147021777ef08c3aa5\\res\\values-en-rIN\\values-en-rIN.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    }
+                }
+            ]
+        }
+    ]
+}
